@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:social_yum/campfire.dart';
 
 class Quiz extends StatefulWidget {
   Quiz({Key key, this.title}) : super(key: key);
@@ -35,6 +38,14 @@ class _QuizState extends State<Quiz> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       answers.add(answer);
+      if (_questionNumber + 1 == questions.length) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Campfire(title: widget.title),
+          ),
+        );
+      }
       _questionNumber++;
     });
   }
@@ -58,9 +69,12 @@ class _QuizState extends State<Quiz> {
           Expanded(
             child: Question(
                 onAnswered: _answerQuestion,
-                questionText: questions[_questionNumber][0],
-                choiceLeft: questions[_questionNumber][1],
-                choiceRight: questions[_questionNumber][2]),
+                questionText:
+                    questions[min(_questionNumber, questions.length - 1)][0],
+                choiceLeft:
+                    questions[min(_questionNumber, questions.length - 1)][1],
+                choiceRight:
+                    questions[min(_questionNumber, questions.length - 1)][2]),
           ),
           Text("$_questionNumber"),
           Text("$answers"),

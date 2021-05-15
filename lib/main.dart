@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:social_yum/quiz.dart';
+import 'package:social_yum/share_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -50,7 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       labelText: 'Email',
                     ),
                   ),
-                  SizedBox(height: 16,),
+                  SizedBox(
+                    height: 16,
+                  ),
                   TextField(
                     controller: passwordController,
                     decoration: InputDecoration(
@@ -58,12 +60,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       labelText: 'Password',
                     ),
                   ),
-                  SizedBox(height: 32,),
+                  SizedBox(
+                    height: 32,
+                  ),
                   TextButton(
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.orangeAccent),
                       overlayColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
+                        (Set<MaterialState> states) {
                           if (states.contains(MaterialState.hovered))
                             return Colors.orangeAccent.withOpacity(0.04);
                           if (states.contains(MaterialState.focused) ||
@@ -77,13 +82,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       print('Email: ${emailController.text}');
                       print('Password: ${passwordController.text}');
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SecondRoute()),
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ShareScreen(title: widget.title)),
                       );
                     },
                     child: Text(
-                        'Login',
-                        style: TextStyle(height: 1, fontSize: 22),
+                      'Login',
+                      style: TextStyle(height: 1, fontSize: 22),
                     ),
                   ),
                 ],
