@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_yum/quiz.dart';
 
 void main() {
   runApp(MyApp());
