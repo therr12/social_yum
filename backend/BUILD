@@ -20,9 +20,9 @@ py_image(
 )
 
 container_push(
-  name = "server_container",
+  name = "api_container",
   format = "Docker",
   registry = "gcr.io",
-  repository = "chowwow/foo",
+  repository = "chowwow/api",
   image = ":server_image",
 )
