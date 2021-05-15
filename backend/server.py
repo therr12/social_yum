@@ -6,6 +6,8 @@ from google.cloud import firestore
 
 
 app = Flask(__name__)
+default_app = firebase_admin.initialize_app()
+
 
 def get_chowwow(id_) -> firestore.DocumentSnapshot:
   return firestore.Client().collection('chowwows').document(id_).get()
@@ -19,13 +21,12 @@ def put_chowwow(owner) -> firestore.DocumentReference:
 @app.route("/api/v1/chowwow", methods=['PUT', 'GET'])
 def hello_world():
     # TODO: Verify auth.
-    default_app = firebase_admin.initialize_app()
     # decoded_token = auth.verify_id_token(id_token)
-    uid = request.args('uid')
+    uid = request.args['uid']
     if request.method == 'PUT':
         return make_response(jsonify(put_chowwow(uid).get().to_dict()), 200)
     elif request.method == 'GET':
-        id_ = request.args('id')
+        id_ = request.args['id']
         if id_ is None:
             return make_response('Missing required "id" param', 400)
         return make_response(jsonify(get_chowwow(id_).to_dict()), 200)

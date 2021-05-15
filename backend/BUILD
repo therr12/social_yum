@@ -15,6 +15,7 @@ py_image(
             requirement("flask"),
             requirement("google-cloud-firestore"),
             requirement("firebase-admin"),
+            requirement("grpcio"),
     ],
 )
 
