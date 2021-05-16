@@ -40,12 +40,28 @@
       });
     }
   </script>
-  <script src="main.dart.js" type="application/javascript"></script>
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBUwsB9XZKhOHqgsls84_o6oqiAHQKLlro",
+      authDomain: "chowwow.firebaseapp.com",
+      projectId: "chowwow",
+      storageBucket: "chowwow.appspot.com",
+      messagingSenderId: "943305292588",
+      appId: "1:943305292588:web:52362391aaafc61dfa0a89",
+      measurementId: "G-1GZE30LDZ9"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+
+  <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>
