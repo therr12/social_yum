@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "943305292588",
+    "project_id": "chowwow",
+    "storage_bucket": "chowwow.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943305292588:android:d59a282da9329a52fa0a89",
+        "android_client_info": {
+          "package_name": "life.covilla.chowwow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943305292588-phkkhd7077o6h1h2a8qo7a6ldh5cqqh1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFVXuQh7mSbb6LwTBHvMHcJkJfROfu5ZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943305292588-phkkhd7077o6h1h2a8qo7a6ldh5cqqh1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "943305292588-159n9ihrm08jtd6u93qgupamj83b0c7m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "life.covilla.chowwow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
