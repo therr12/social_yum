@@ -7,11 +7,11 @@ import 'package:social_yum/quiz.dart';
 import 'package:social_yum/share_url.dart';
 
 class ShareScreen extends StatelessWidget {
-  ShareScreen({Key key}) : super(key: key);
+  ShareScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final data = InheritedDataProvider.of(context).data;
+    final data = InheritedDataProvider.of(context)!.data;
 
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +24,7 @@ class ShareScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(100.0),
               child: Text(
-                "Hey " + (data.googleUser == null ? "there" : data.googleUser.displayName.split(' ')[0]) + '!',
+                "Hey " + (data.googleUser == null || data.googleUser!.displayName == null ? "there" : data.googleUser!.displayName!.split(' ')[0]) + '!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5,
               ),
@@ -38,9 +38,9 @@ class ShareScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 var url = Uri.parse('https://api.chowwow.app/api/v1/chowwow/' +
-                    data.chowwow +
+                    data.chowwow! +
                     '/survey?token=' +
-                    data.token);
+                    data.token!);
                 var response = await http.post(url);
 
                 List<dynamic> questions =

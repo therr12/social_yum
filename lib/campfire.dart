@@ -4,7 +4,7 @@ import 'package:social_yum/share_url.dart';
 import 'package:social_yum/wheel.dart';
 
 class Campfire extends StatelessWidget {
-  Campfire({Key key}) : super(key: key);
+  Campfire({Key? key}) : super(key: key);
 
   final String url = 'www.google.com';
   final bool isHost = true;
@@ -21,15 +21,15 @@ class Campfire extends StatelessWidget {
 
 class CampfireHost extends StatelessWidget {
   const CampfireHost({
-    Key key,
-    @required this.url,
+    Key? key,
+    required this.url,
   }) : super(key: key);
 
   final String url;
 
   @override
   Widget build(BuildContext context) {
-    final data = InheritedDataProvider.of(context).data;
+    final data = InheritedDataProvider.of(context)!.data;
     return Scaffold(
       appBar: AppBar(
         title: Text(data.title),
@@ -57,7 +57,7 @@ class CampfireHost extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Wheel(title: data.title)),
+                        builder: (context) => Wheel()),
                   );
                 },
                 child: Text(
@@ -83,15 +83,15 @@ class CampfireHost extends StatelessWidget {
 
 class CampfireGuest extends StatelessWidget {
   const CampfireGuest({
-    Key key,
-    @required this.url,
+    Key? key,
+    required this.url,
   }) : super(key: key);
 
   final String url;
 
   @override
   Widget build(BuildContext context) {
-    final data = InheritedDataProvider.of(context).data;
+    final data = InheritedDataProvider.of(context)!.data;
     return Scaffold(
       appBar: AppBar(
         title: Text(data.title),
@@ -121,7 +121,7 @@ class CampfireGuest extends StatelessWidget {
 
 class Tents extends StatelessWidget {
   const Tents({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

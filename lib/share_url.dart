@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 class ShareURL extends StatelessWidget {
   const ShareURL({
-    Key key,
-    @required this.url,
+    Key? key,
+    required this.url,
   }) : super(key: key);
 
   final String url;

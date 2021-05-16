@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           if (states.contains(MaterialState.focused) ||
                               states.contains(MaterialState.pressed))
                             return Colors.orangeAccent.withOpacity(0.12);
-                          return null; // Defer to the widget's default.
+                          return Theme.of(context).buttonColor;
                         },
                       ),
                     ),
@@ -109,15 +109,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               builder: (context) => ShareScreen()),
                         );
                       } else {
-                        final GoogleSignInAccount googleUser =
+                        final GoogleSignInAccount? googleUser =
                             await GoogleSignIn().signIn();
                         if (googleUser != null) {
-                          InheritedDataProvider.of(context).data.googleUser =
+                          InheritedDataProvider.of(context)!.data.googleUser =
                               googleUser;
                           final GoogleSignInAuthentication googleAuth =
                               await googleUser.authentication;
                           // Create a new credential.
-                          final GoogleAuthCredential googleCredential =
+                          final OAuthCredential googleCredential =
                               GoogleAuthProvider.credential(
                             accessToken: googleAuth.accessToken,
                             idToken: googleAuth.idToken,
@@ -125,19 +125,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           // Sign in to Firebase with the Google [UserCredential].
                           googleUserCredential = await FirebaseAuth.instance
                               .signInWithCredential(googleCredential);
-                          final token = await FirebaseAuth.instance.currentUser
-                              .getIdToken();
-                          var url = Uri.parse(
-                              'https://api.chowwow.app/api/v1/chowwow?token=' +
-                                  token);
-                          // // for creating a chowwow: http.put uid=token
-                          // // for joining a chowwow: http.patch cid=id&uid=token
-                          var response = await http.put(url);
-                          print('Response status: ${response.statusCode}');
-                          print('Response body: ${response.body}');
-                          InheritedDataProvider.of(context).data.chowwow =
-                              jsonDecode(response.body)["id"];
-                          InheritedDataProvider.of(context).data.token = token;
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
@@ -146,6 +133,19 @@ class _MyHomePageState extends State<MyHomePage> {
                           );
                         }
                       }
+                      final token = await FirebaseAuth.instance.currentUser!
+                          .getIdToken();
+                      var url = Uri.parse(
+                          'https://api.chowwow.app/api/v1/chowwow?token=' +
+                              token);
+                      // // for creating a chowwow: http.put uid=token
+                      // // for joining a chowwow: http.patch cid=id&uid=token
+                      var response = await http.put(url);
+                      print('Response status: ${response.statusCode}');
+                      print('Response body: ${response.body}');
+                      InheritedDataProvider.of(context)!.data.chowwow =
+                          jsonDecode(response.body)["id"];
+                      InheritedDataProvider.of(context)!.data.token = token;
                     },
                     child: Center(
                       child: Column(

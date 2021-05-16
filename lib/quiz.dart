@@ -7,7 +7,7 @@ import 'package:social_yum/campfire.dart';
 import 'package:social_yum/inheritedData.dart';
 
 class Quiz extends StatefulWidget {
-  Quiz(this.questions, {Key key}) : super(key: key);
+  Quiz(this.questions, {Key? key}) : super(key: key);
   List<dynamic> questions;
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -26,13 +26,7 @@ class Quiz extends StatefulWidget {
 class _QuizState extends State<Quiz> {
   int _questionNumber = 0;
   List<String> answers = [];
-  Data data;
-
-  // List<List<String>> questions = [
-  //   ["1", "cheese", "bacon"],
-  //   ["2", "test", "yah"],
-  //   ["3", "yeet", "u know it"],
-  // ];
+  Data? data;
 
   void _answerQuestion(String answer) async {
     setState(() {
@@ -47,9 +41,9 @@ class _QuizState extends State<Quiz> {
     if (_questionNumber == widget.questions.length) {
       String encodedAnswers = Uri.encodeComponent(jsonEncode(answers));
       var url = Uri.parse('https://api.chowwow.app/api/v1/chowwow/' +
-          data.chowwow +
+          data!.chowwow! +
           '/survey?token=' +
-          data.token +
+          data!.token! +
           '&responses=' +
           encodedAnswers);
       var response = await http.patch(url);
@@ -65,7 +59,7 @@ class _QuizState extends State<Quiz> {
 
   @override
   Widget build(BuildContext context) {
-    this.data = InheritedDataProvider.of(context).data;
+    this.data = InheritedDataProvider.of(context)!.data;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -105,11 +99,11 @@ class Question extends StatelessWidget {
   final List<String> choices;
 
   const Question({
-    Key key,
-    void Function(String) onAnswered,
-    String questionText,
-    List<String> choices,
-  })  : this.onAnswered = onAnswered,
+    Key? key,
+    required void Function(String) onAnswered,
+    required String questionText,
+    required List<String> choices,
+  })   : this.onAnswered = onAnswered,
         this.questionText = questionText,
         this.choices = choices,
         super(key: key);
@@ -200,9 +194,9 @@ class Question extends StatelessWidget {
 
 class ResponseButton extends StatelessWidget {
   const ResponseButton({
-    Key key,
-    @required this.onAnswered,
-    @required this.answer,
+    Key? key,
+    required this.onAnswered,
+    required this.answer,
   }) : super(key: key);
 
   final void Function(String p1) onAnswered;

@@ -62,7 +62,25 @@ def authenticated(func):
   return wrapped
 
 
-@app.route("/api/v1/chowwow", methods=['PUT', 'PATCH', 'GET'])
+def allow_origin(origin):
+  def decorator(func):
+    @functools.wraps(func)
+    def wrapped(*a, **k):
+      if request.method == 'OPTIONS':
+        res = make_response()
+        res.headers.add('Access-Control-Allow-Origin', origin)
+        res.headers.add('Access-Control-Allow-Methods', '*')
+        res.headers.add('Access-Control-Allow-Headers', '*')
+        return res
+      res = func(*a, **k)
+      res.headers.add('Access-Control-Allow-Origin', origin)
+      return res
+    return wrapped
+  return decorator
+
+
+@app.route("/api/v1/chowwow", methods=['PUT', 'PATCH', 'GET', 'OPTIONS'])
+@allow_origin("https://chowwow.web.app")
 @authenticated
 def chowwow(token):
     uid = token['uid']
@@ -86,7 +104,8 @@ def generate_survey(cid, uid):
     return [{'question': 'What do want?', 'choices': ['Foo', 'Bar']}]*5
 
 
-@app.route("/api/v1/chowwow/<cid>/survey", methods=['GET', 'PATCH', 'POST'])
+@app.route("/api/v1/chowwow/<cid>/survey", methods=['GET', 'PATCH', 'POST', 'OPTIONS'])
+@allow_origin("https://chowwow.web.app")
 @authenticated
 def survey(token, cid):
     uid = token['uid']
@@ -109,6 +128,7 @@ def survey(token, cid):
 
 
 @app.route("/api/v1/chowwow/<cid>/survey/all")
+@allow_origin("https://chowwow.web.app")
 @authenticated
 def list_survey(token, cid):
     uid = token['uid']
