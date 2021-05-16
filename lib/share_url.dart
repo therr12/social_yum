@@ -11,26 +11,46 @@ class ShareURL extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            url,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline5,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          border: Border(
+            top: BorderSide(width: 5.0, color: Colors.grey),
+            left: BorderSide(width: 5.0, color: Colors.grey),
+            right: BorderSide(width: 5.0, color: Colors.grey),
+            bottom: BorderSide(width: 5.0, color: Colors.grey),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: url));
-              },
-              child: Text("copy")),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                url,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextButton(
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: url));
+                },
+                child: Icon(
+                  Icons.content_copy_rounded,
+                  color: Colors.orange,
+                  size: 20.0,
+                ),
+                // content_copy_rounded
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
