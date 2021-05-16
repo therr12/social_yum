@@ -38,10 +38,12 @@ class MyApp extends StatelessWidget {
                 home: MyHomePage(),
               ),
               data: Data(
-                  googleUser: null,
-                  title: 'chow.wow',
-                  chowwow: null,
-                  token: null));
+                googleUser: null,
+                title: 'chow.wow',
+                chowwow: null,
+                token: null,
+                host: null,
+              ));
         } else {
           return MaterialApp(
             title: 'loading',

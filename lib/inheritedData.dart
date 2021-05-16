@@ -19,8 +19,14 @@ class Data {
   final String title;
   String? chowwow;
   String? token;
+  bool? host;
   final String base_url = 'chowwow.app';
-  Data({this.googleUser, required this.title, this.chowwow, this.token});
+  Data(
+      {this.googleUser,
+      required this.title,
+      this.chowwow,
+      this.token,
+      this.host});
   String getGroupURL() {
     return base_url + '/' + (chowwow ?? "");
   }
