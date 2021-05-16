@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:social_yum/inheritedData.dart';
 import 'package:social_yum/quiz.dart';
 import 'package:social_yum/share_url.dart';
 
 class ShareScreen extends StatelessWidget {
-  ShareScreen({Key key, this.title, this.user}) : super(key: key);
-
-  final String title;
-  final GoogleSignInAccount user;
+  ShareScreen({Key key}) : super(key: key);
 
   final String url = 'www.google.com';
 
   @override
   Widget build(BuildContext context) {
+    final data = InheritedDataProvider.of(context).data;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.title),
+        title: Text(data.title),
       ),
       body: Center(
         child: Column(
@@ -24,7 +23,7 @@ class ShareScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(100.0),
               child: Text(
-                "Hey " + user.displayName.split(' ')[0] + '!',
+                "Hey " + data.googleUser.displayName.split(' ')[0] + '!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5,
               ),
@@ -39,8 +38,7 @@ class ShareScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => Quiz(title: this.title)),
+                  MaterialPageRoute(builder: (context) => Quiz()),
                 );
               },
               child: Text(

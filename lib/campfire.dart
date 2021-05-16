@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:social_yum/inheritedData.dart';
 import 'package:social_yum/share_url.dart';
 import 'package:social_yum/wheel.dart';
 
 class Campfire extends StatelessWidget {
-  Campfire({Key key, this.title}) : super(key: key);
-
-  final String title;
+  Campfire({Key key}) : super(key: key);
 
   final String url = 'www.google.com';
   final bool isHost = true;
@@ -13,9 +12,9 @@ class Campfire extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isHost) {
-      return CampfireHost(title: title, url: url);
+      return CampfireHost(url: url);
     } else {
-      return CampfireGuest(title: title, url: url);
+      return CampfireGuest(url: url);
     }
   }
 }
@@ -23,18 +22,17 @@ class Campfire extends StatelessWidget {
 class CampfireHost extends StatelessWidget {
   const CampfireHost({
     Key key,
-    @required this.title,
     @required this.url,
   }) : super(key: key);
 
-  final String title;
   final String url;
 
   @override
   Widget build(BuildContext context) {
+    final data = InheritedDataProvider.of(context).data;
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.title),
+        title: Text(data.title),
       ),
       body: Center(
         child: Column(
@@ -59,7 +57,7 @@ class CampfireHost extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Wheel(title: this.title)),
+                        builder: (context) => Wheel(title: data.title)),
                   );
                 },
                 child: Text(
@@ -86,18 +84,17 @@ class CampfireHost extends StatelessWidget {
 class CampfireGuest extends StatelessWidget {
   const CampfireGuest({
     Key key,
-    @required this.title,
     @required this.url,
   }) : super(key: key);
 
-  final String title;
   final String url;
 
   @override
   Widget build(BuildContext context) {
+    final data = InheritedDataProvider.of(context).data;
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.title),
+        title: Text(data.title),
       ),
       body: Center(
         child: Column(

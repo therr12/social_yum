@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:social_yum/campfire.dart';
 
 class Quiz extends StatefulWidget {
-  Quiz({Key key, this.title}) : super(key: key);
+  Quiz({Key key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -14,8 +14,6 @@ class Quiz extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
-  final String title;
 
   @override
   _QuizState createState() => _QuizState();
@@ -42,7 +40,7 @@ class _QuizState extends State<Quiz> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Campfire(title: widget.title),
+            builder: (context) => Campfire(),
           ),
         );
       }
@@ -62,7 +60,7 @@ class _QuizState extends State<Quiz> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('test'),
       ),
       body: Column(
         children: [

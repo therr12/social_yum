@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'package:social_yum/inheritedData.dart';
 import 'package:social_yum/share_screen.dart';
 
 void main() {
@@ -12,7 +14,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      // Initialize FlutterFire
       future: Firebase.initializeApp(),
       builder: (context, snapshot) {
         // Check for errors
@@ -24,36 +25,32 @@ class MyApp extends StatelessWidget {
             ),
             home: Text(snapshot.error.toString()),
           );
-        }
-
-        // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done) {
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return InheritedDataProvider(
+              child: MaterialApp(
+                title: 'chow.wow',
+                theme: ThemeData(
+                  primarySwatch: Colors.orange,
+                ),
+                home: MyHomePage(),
+              ),
+              data: Data(googleUser: null, title: 'chow.wow'));
+        } else {
           return MaterialApp(
-            title: 'chow.wow',
+            title: 'loading',
             theme: ThemeData(
               primarySwatch: Colors.orange,
             ),
-            home: MyHomePage(title: 'chow.wow'),
+            home: Text("Loading"),
           );
         }
-
-        // Otherwise, show something whilst waiting for initialization to complete
-        return MaterialApp(
-          title: 'loading',
-          theme: ThemeData(
-            primarySwatch: Colors.orange,
-          ),
-          home: Text("Loading"),
-        );
       },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -105,21 +102,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         final UserCredential googleUserCredential =
                             await FirebaseAuth.instance
                                 .signInWithCredential(googleCredential);
-                        // final token = await FirebaseAuth.instance.currentUser
-                        //     .getIdToken();
-                        // var url = Uri.parse(
-                        //     'https://api.chowwow.app/api/v1/chowwow?uid=' +
-                        //         token);
+                        final token = await FirebaseAuth.instance.currentUser
+                            .getIdToken();
+                        var url = Uri.parse(
+                            'https://api.chowwow.app/api/v1/chowwow?token=' +
+                                token);
                         // // for creating a chowwow: http.put uid=token
                         // // for joining a chowwow: http.patch cid=id&uid=token
-                        // var response = await http.put(url);
-                        // print('Response status: ${response.statusCode}');
-                        // print('Response body: ${response.body}');
+                        var response = await http.put(url);
+                        print('Response status: ${response.statusCode}');
+                        print('Response body: ${response.body}');
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => ShareScreen(
-                                  title: widget.title, user: googleUser)),
+                          MaterialPageRoute(builder: (context) {
+                            InheritedDataProvider.of(context).data.googleUser =
+                                googleUser;
+                            return ShareScreen();
+                          }),
                         );
                       }
                     },
