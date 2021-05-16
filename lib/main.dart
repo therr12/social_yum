@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_yum/share_screen.dart';
 
 void main() {
@@ -8,12 +10,41 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'chow.wow',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-      ),
-      home: MyHomePage(title: 'chow.wow'),
+    return FutureBuilder(
+      // Initialize FlutterFire
+      future: Firebase.initializeApp(),
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return MaterialApp(
+            title: 'error',
+            theme: ThemeData(
+              primarySwatch: Colors.orange,
+            ),
+            home: Text(snapshot.error.toString()),
+          );
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            title: 'chow.wow',
+            theme: ThemeData(
+              primarySwatch: Colors.orange,
+            ),
+            home: MyHomePage(title: 'chow.wow'),
+          );
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return MaterialApp(
+          title: 'loading',
+          theme: ThemeData(
+            primarySwatch: Colors.orange,
+          ),
+          home: Text("Loading"),
+        );
+      },
     );
   }
 }
@@ -30,7 +61,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,29 +70,29 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Image.asset('assets/images/logo.png'),
             Container(
-              padding: EdgeInsets.only(right: 168, left: 168),
+              padding: EdgeInsets.only(right: 50, left: 50),
               child: Column(
                 children: <Widget>[
-                  TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  TextField(
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 32,
-                  ),
+                  // TextField(
+                  //   controller: emailController,
+                  //   decoration: InputDecoration(
+                  //     border: OutlineInputBorder(),
+                  //     labelText: 'Email',
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 16,
+                  // ),
+                  // TextField(
+                  //   controller: passwordController,
+                  //   decoration: InputDecoration(
+                  //     border: OutlineInputBorder(),
+                  //     labelText: 'Password',
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 32,
+                  // ),
                   TextButton(
                     style: ButtonStyle(
                       foregroundColor:
@@ -78,19 +108,29 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       ),
                     ),
-                    onPressed: () {
-                      print('Email: ${emailController.text}');
-                      print('Password: ${passwordController.text}');
+                    onPressed: () async {
+                      final GoogleSignInAccount googleUser =
+                          await GoogleSignIn().signIn();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                ShareScreen(title: widget.title)),
+                            builder: (context) => ShareScreen(
+                                title: widget.title, user: googleUser)),
                       );
                     },
-                    child: Text(
-                      'Login',
-                      style: TextStyle(height: 1, fontSize: 22),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Login',
+                            style: TextStyle(height: 1, fontSize: 24),
+                          ),
+                          Text(
+                            '(Requires Google Account)',
+                            style: TextStyle(height: 1, fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

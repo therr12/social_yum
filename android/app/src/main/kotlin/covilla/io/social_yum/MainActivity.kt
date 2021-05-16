@@ -1,4 +1,4 @@
-package covilla.io.social_yum
+package life.covilla.chowwow
 
 import io.flutter.embedding.android.FlutterActivity
 

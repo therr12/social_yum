@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="covilla.io.social_yum">
+    package="life.covilla.chowwow">
    <application
         android:label="social_yum"
         android:icon="@mipmap/ic_launcher">

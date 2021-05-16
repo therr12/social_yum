@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:social_yum/quiz.dart';
 import 'package:social_yum/share_url.dart';
 
 class ShareScreen extends StatelessWidget {
-  ShareScreen({Key key, this.title}) : super(key: key);
+  ShareScreen({Key key, this.title, this.user}) : super(key: key);
 
   final String title;
+  final GoogleSignInAccount user;
 
   final String url = 'www.google.com';
 
@@ -19,6 +21,14 @@ class ShareScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(100.0),
+              child: Text(
+                "Hey " + user.displayName.split(' ')[0] + '!',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ),
             Text(
               "Invite friends to Chowwow",
               textAlign: TextAlign.center,
