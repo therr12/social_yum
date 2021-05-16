@@ -24,7 +24,7 @@ class ShareScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(100.0),
               child: Text(
-                "Hey " + data.googleUser.displayName.split(' ')[0] + '!',
+                "Hey " + (data.googleUser == null ? "there" : data.googleUser.displayName.split(' ')[0]) + '!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5,
               ),

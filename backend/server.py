@@ -1,3 +1,4 @@
+import functools
 import json
 import os
 
@@ -50,15 +51,21 @@ def _with_id(doc):
   return data
 
 
-@app.route("/api/v1/chowwow", methods=['PUT', 'PATCH', 'GET'])
-def chowwow():
-    # TODO: Verify auth.
-    # decoded_token = auth.verify_id_token(id_token)
+def authenticated(func):
+  @functools.wraps(func)
+  def wrapped(*a, **k):
     token = request.args.get('token')
     if token is None:
       return make_response('Missing user auth token', 401)
     decoded_token = auth.verify_id_token(token)
-    uid = decoded_token['uid']
+    return func(decoded_token, *a, **k)
+  return wrapped
+
+
+@app.route("/api/v1/chowwow", methods=['PUT', 'PATCH', 'GET'])
+@authenticated
+def chowwow(token):
+    uid = token['uid']
     if request.method == 'PUT':
         return make_response(jsonify(_with_id(put_chowwow(uid))), 200)
     elif request.method == 'PATCH':
@@ -76,18 +83,13 @@ def chowwow():
 
 
 def generate_survey(cid, uid):
-    return [{'question': 'What do want?', 'choice1': 'Foo', 'choice2': 'Bar'}]*5
+    return [{'question': 'What do want?', 'choices': ['Foo', 'Bar']}]*5
 
 
 @app.route("/api/v1/chowwow/<cid>/survey", methods=['GET', 'PATCH', 'POST'])
-def survey(cid):
-    # TODO: Verify auth.
-    # decoded_token = auth.verify_id_token(id_token)
-    token = request.args.get('token')
-    if token is None:
-      return make_response('Missing user auth token', 401)
-    decoded_token = auth.verify_id_token(token)
-    uid = decoded_token['uid']
+@authenticated
+def survey(token, cid):
+    uid = token['uid']
     if not get_chowwow(cid).exists:
       return make_response('Chowwow does not exist', 404)
     if request.method == 'POST':
@@ -107,14 +109,9 @@ def survey(cid):
 
 
 @app.route("/api/v1/chowwow/<cid>/survey/all")
-def list_survey(cid):
-    # TODO: Verify auth.
-    # decoded_token = auth.verify_id_token(id_token)
-    token = request.args.get('token')
-    if token is None:
-      return make_response('Missing user auth token', 401)
-    decoded_token = auth.verify_id_token(token)
-    uid = decoded_token['uid']
+@authenticated
+def list_survey(token, cid):
+    uid = token['uid']
     if not get_chowwow(cid).exists:
       return make_response('Chowwow does not exist', 404)
     return make_response(jsonify(list(map(_with_id, firestore.Client().collection('surveys').where('chowwow', '==', cid).stream()))))
