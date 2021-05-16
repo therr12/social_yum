@@ -3,6 +3,7 @@ import os
 
 from flask import Flask, request, make_response, jsonify
 import firebase_admin
+from firebase_admin import auth
 from google.cloud import firestore
 
 
@@ -53,9 +54,11 @@ def _with_id(doc):
 def chowwow():
     # TODO: Verify auth.
     # decoded_token = auth.verify_id_token(id_token)
-    uid = request.args.get('uid')
-    if uid is None:
-      return make_response('Missing user ID', 401)
+    token = request.args.get('token')
+    if token is None:
+      return make_response('Missing user auth token', 401)
+    decoded_token = auth.verify_id_token(token)
+    uid = decoded_token['uid']
     if request.method == 'PUT':
         return make_response(jsonify(_with_id(put_chowwow(uid))), 200)
     elif request.method == 'PATCH':
@@ -80,9 +83,11 @@ def generate_survey(cid, uid):
 def survey(cid):
     # TODO: Verify auth.
     # decoded_token = auth.verify_id_token(id_token)
-    uid = request.args.get('uid')
-    if uid is None:
-      return make_response('Missing user ID', 401)
+    token = request.args.get('token')
+    if token is None:
+      return make_response('Missing user auth token', 401)
+    decoded_token = auth.verify_id_token(token)
+    uid = decoded_token['uid']
     if not get_chowwow(cid).exists:
       return make_response('Chowwow does not exist', 404)
     if request.method == 'POST':
@@ -105,9 +110,11 @@ def survey(cid):
 def list_survey(cid):
     # TODO: Verify auth.
     # decoded_token = auth.verify_id_token(id_token)
-    uid = request.args.get('uid')
-    if uid is None:
-      return make_response('Missing user ID', 401)
+    token = request.args.get('token')
+    if token is None:
+      return make_response('Missing user auth token', 401)
+    decoded_token = auth.verify_id_token(token)
+    uid = decoded_token['uid']
     if not get_chowwow(cid).exists:
       return make_response('Chowwow does not exist', 404)
     return make_response(jsonify(list(map(_with_id, firestore.Client().collection('surveys').where('chowwow', '==', cid).stream()))))
