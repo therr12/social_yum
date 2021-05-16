@@ -111,12 +111,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () async {
                       final GoogleSignInAccount googleUser =
                           await GoogleSignIn().signIn();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ShareScreen(
-                                title: widget.title, user: googleUser)),
-                      );
+                      if (googleUser != null) {
+                        googleUser.authentication.then((auth) {
+                          print(auth.idToken);
+                        }).catchError((e) {
+                          499;
+                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShareScreen(
+                                  title: widget.title, user: googleUser)),
+                        );
+                      }
                     },
                     child: Center(
                       child: Column(
