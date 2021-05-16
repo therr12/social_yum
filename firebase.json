@@ -6,10 +6,16 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [
+    "redirects": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "regex": "/([A-Za-z0-9]*)$",
+        "destination": "/#/:1",
+        "type": 301
+      },
+      {
+        "regex": "/.*",
+        "destination": "/#/",
+        "type": 301
       }
     ]
   }
