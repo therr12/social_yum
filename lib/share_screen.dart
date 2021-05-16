@@ -1,12 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:social_yum/inheritedData.dart';
 import 'package:social_yum/quiz.dart';
 import 'package:social_yum/share_url.dart';
 
 class ShareScreen extends StatelessWidget {
   ShareScreen({Key key}) : super(key: key);
-
-  final String url = 'www.google.com';
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +34,21 @@ class ShareScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline5,
             ),
-            ShareURL(url: url),
+            ShareURL(url: data.getGroupURL()),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                var url = Uri.parse('https://api.chowwow.app/api/v1/chowwow/' +
+                    data.chowwow +
+                    '/survey?token=' +
+                    data.token);
+                var response = await http.post(url);
+
+                List<dynamic> questions =
+                    jsonDecode(response.body)["questions"];
+                print(questions);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Quiz()),
+                  MaterialPageRoute(builder: (context) => Quiz(questions)),
                 );
               },
               child: Text(

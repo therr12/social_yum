@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -35,7 +37,11 @@ class MyApp extends StatelessWidget {
                 ),
                 home: MyHomePage(),
               ),
-              data: Data(googleUser: null, title: 'chow.wow'));
+              data: Data(
+                  googleUser: null,
+                  title: 'chow.wow',
+                  chowwow: null,
+                  token: null));
         } else {
           return MaterialApp(
             title: 'loading',
@@ -90,17 +96,22 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () async {
                       UserCredential googleUserCredential;
                       if (kIsWeb) {
-                        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+                        GoogleAuthProvider googleProvider =
+                            GoogleAuthProvider();
                         // Once signed in, return the UserCredential
-                        googleUserCredential = await FirebaseAuth.instance.signInWithPopup(googleProvider);
+                        googleUserCredential = await FirebaseAuth.instance
+                            .signInWithPopup(googleProvider);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ShareScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => ShareScreen()),
                         );
                       } else {
                         final GoogleSignInAccount googleUser =
                             await GoogleSignIn().signIn();
                         if (googleUser != null) {
+                          InheritedDataProvider.of(context).data.googleUser =
+                              googleUser;
                           final GoogleSignInAuthentication googleAuth =
                               await googleUser.authentication;
                           // Create a new credential.
@@ -110,27 +121,29 @@ class _MyHomePageState extends State<MyHomePage> {
                             idToken: googleAuth.idToken,
                           );
                           // Sign in to Firebase with the Google [UserCredential].
-                          googleUserCredential = await FirebaseAuth.instance.signInWithCredential(googleCredential);
+                          googleUserCredential = await FirebaseAuth.instance
+                              .signInWithCredential(googleCredential);
+                          final token = await FirebaseAuth.instance.currentUser
+                              .getIdToken();
+                          var url = Uri.parse(
+                              'https://api.chowwow.app/api/v1/chowwow?token=' +
+                                  token);
+                          // // for creating a chowwow: http.put uid=token
+                          // // for joining a chowwow: http.patch cid=id&uid=token
+                          var response = await http.put(url);
+                          print('Response status: ${response.statusCode}');
+                          print('Response body: ${response.body}');
+                          InheritedDataProvider.of(context).data.chowwow =
+                              jsonDecode(response.body)["id"];
+                          InheritedDataProvider.of(context).data.token = token;
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
-                              InheritedDataProvider.of(context).data.googleUser =
-                                  googleUser;
                               return ShareScreen();
                             }),
                           );
                         }
                       }
-                      final token = await FirebaseAuth.instance.currentUser
-                          .getIdToken();
-                      var url = Uri.parse(
-                          'https://api.chowwow.app/api/v1/chowwow?token=' +
-                              token);
-                      // // for creating a chowwow: http.put uid=token
-                      // // for joining a chowwow: http.patch cid=id&uid=token
-                      var response = await http.put(url);
-                      print('Response status: ${response.statusCode}');
-                      print('Response body: ${response.body}');
                     },
                     child: Center(
                       child: Column(

@@ -17,7 +17,13 @@ class InheritedDataProvider extends InheritedWidget {
 class Data {
   GoogleSignInAccount googleUser;
   final String title;
-  Data({this.googleUser, this.title});
+  String chowwow;
+  String token;
+  final String base_url = 'chowwow.app';
+  Data({this.googleUser, this.title, this.chowwow, this.token});
+  String getGroupURL() {
+    return base_url + '/' + chowwow;
+  }
 }
 
 // class InheritedDataWidget extends StatelessWidget {

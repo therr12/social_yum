@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:social_yum/campfire.dart';
 
 class Quiz extends StatefulWidget {
-  Quiz({Key key}) : super(key: key);
+  Quiz(this.questions, {Key key}) : super(key: key);
+  List<dynamic> questions;
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -21,14 +22,14 @@ class Quiz extends StatefulWidget {
 
 class _QuizState extends State<Quiz> {
   int _questionNumber = 0;
-  List<int> answers = [];
-  List<List<String>> questions = [
-    ["1", "cheese", "bacon"],
-    ["2", "test", "yah"],
-    ["3", "yeet", "u know it"],
-  ];
+  List<String> answers = [];
+  // List<List<String>> questions = [
+  //   ["1", "cheese", "bacon"],
+  //   ["2", "test", "yah"],
+  //   ["3", "yeet", "u know it"],
+  // ];
 
-  void _answerQuestion(int answer) {
+  void _answerQuestion(String answer) {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -36,7 +37,7 @@ class _QuizState extends State<Quiz> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       answers.add(answer);
-      if (_questionNumber + 1 == questions.length) {
+      if (_questionNumber + 1 == widget.questions.length) {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -67,12 +68,13 @@ class _QuizState extends State<Quiz> {
           Expanded(
             child: Question(
                 onAnswered: _answerQuestion,
-                questionText:
-                    questions[min(_questionNumber, questions.length - 1)][0],
-                choiceLeft:
-                    questions[min(_questionNumber, questions.length - 1)][1],
-                choiceRight:
-                    questions[min(_questionNumber, questions.length - 1)][2]),
+                questionText: widget.questions[
+                        min(_questionNumber, widget.questions.length - 1)]
+                    ["question"],
+                choices: widget.questions[
+                        min(_questionNumber, widget.questions.length - 1)]
+                        ["choices"]
+                    .cast<String>()),
           ),
           Text("$_questionNumber"),
           Text("$answers"),
@@ -83,25 +85,28 @@ class _QuizState extends State<Quiz> {
 }
 
 class Question extends StatelessWidget {
-  final void Function(int) onAnswered;
+  final void Function(String) onAnswered;
   final String questionText;
-  final String choiceLeft;
-  final String choiceRight;
+  final List<String> choices;
 
   const Question({
     Key key,
-    void Function(int) onAnswered,
+    void Function(String) onAnswered,
     String questionText,
-    String choiceLeft,
-    String choiceRight,
+    List<String> choices,
   })  : this.onAnswered = onAnswered,
         this.questionText = questionText,
-        this.choiceLeft = choiceLeft,
-        this.choiceRight = choiceRight,
+        this.choices = choices,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String answer = 'blah';
+    var responseButtons = this
+        .choices
+        .map((answer) => ResponseButton(onAnswered: onAnswered, answer: answer))
+        .toList();
+
     return Center(
       // Center is a layout widget. It takes a single child and positions it
       // in the middle of the parent.
@@ -127,50 +132,73 @@ class Question extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline3,
           ),
-          Container(
-            height: 300,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    height: 200,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          onAnswered(0);
-                        },
-                        child: Text(
-                          choiceLeft,
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 200,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          onAnswered(1);
-                        },
-                        child: Text(
-                          choiceRight,
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          Column(
+            children: responseButtons,
+          )
+          // Container(
+          //   height: 300,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: <Widget>[
+          //       Expanded(
+          //         child: Container(
+          //           height: 200,
+          //           child: Padding(
+          //             padding: const EdgeInsets.all(8.0),
+          //             child: ElevatedButton(
+          //               onPressed: () {
+          //                 onAnswered(0);
+          //               },
+          //               child: Text(
+          //                 choiceLeft,
+          //                 style: Theme.of(context).textTheme.headline4,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //       Expanded(
+          //         child: Container(
+          //           height: 200,
+          //           child: Padding(
+          //             padding: const EdgeInsets.all(8.0),
+          //             child: ElevatedButton(
+          //               onPressed: () {
+          //                 onAnswered(1);
+          //               },
+          //               child: Text(
+          //                 choiceRight,
+          //                 style: Theme.of(context).textTheme.headline4,
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
+  }
+}
+
+class ResponseButton extends StatelessWidget {
+  const ResponseButton({
+    Key key,
+    @required this.onAnswered,
+    @required this.answer,
+  }) : super(key: key);
+
+  final void Function(String p1) onAnswered;
+  final String answer;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          onAnswered(answer);
+        },
+        child: Text(answer));
   }
 }
