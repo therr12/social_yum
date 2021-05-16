@@ -12,7 +12,7 @@ class ShareURL extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -31,7 +31,7 @@ class ShareURL extends StatelessWidget {
               child: Text(
                 url,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
             Padding(

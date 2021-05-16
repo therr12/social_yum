@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +36,11 @@ class MyApp extends StatelessWidget {
                 ),
                 home: MyHomePage(),
               ),
-              data: Data(googleUser: null, title: 'chow.wow'));
+              data: Data(
+                  googleUser: null,
+                  title: 'chow.wow',
+                  chowwow: null,
+                  token: null));
         } else {
           return MaterialApp(
             title: 'loading',
@@ -112,11 +118,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         var response = await http.put(url);
                         print('Response status: ${response.statusCode}');
                         print('Response body: ${response.body}');
+                        InheritedDataProvider.of(context).data.googleUser =
+                            googleUser;
+                        InheritedDataProvider.of(context).data.chowwow =
+                            jsonDecode(response.body)["id"];
+                        InheritedDataProvider.of(context).data.token = token;
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            InheritedDataProvider.of(context).data.googleUser =
-                                googleUser;
                             return ShareScreen();
                           }),
                         );
