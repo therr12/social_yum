@@ -4,25 +4,25 @@ import 'package:google_sign_in/google_sign_in.dart';
 class InheritedDataProvider extends InheritedWidget {
   final Data data;
   InheritedDataProvider({
-    Widget child,
-    this.data,
+    required Widget child,
+    required this.data,
   }) : super(child: child);
   @override
   bool updateShouldNotify(InheritedDataProvider oldWidget) =>
       data != oldWidget.data;
-  static InheritedDataProvider of(BuildContext context) =>
+  static InheritedDataProvider? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<InheritedDataProvider>();
 }
 
 class Data {
-  GoogleSignInAccount googleUser;
+  GoogleSignInAccount? googleUser;
   final String title;
-  String chowwow;
-  String token;
+  String? chowwow;
+  String? token;
   final String base_url = 'chowwow.app';
-  Data({this.googleUser, this.title, this.chowwow, this.token});
+  Data({this.googleUser, required this.title, this.chowwow, this.token});
   String getGroupURL() {
-    return base_url + '/' + chowwow;
+    return base_url + '/' + (chowwow ?? "");
   }
 }
 
