@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -73,26 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: EdgeInsets.only(right: 50, left: 50),
               child: Column(
                 children: <Widget>[
-                  // TextField(
-                  //   controller: emailController,
-                  //   decoration: InputDecoration(
-                  //     border: OutlineInputBorder(),
-                  //     labelText: 'Email',
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 16,
-                  // ),
-                  // TextField(
-                  //   controller: passwordController,
-                  //   decoration: InputDecoration(
-                  //     border: OutlineInputBorder(),
-                  //     labelText: 'Password',
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 32,
-                  // ),
                   TextButton(
                     style: ButtonStyle(
                       foregroundColor:
@@ -112,11 +93,28 @@ class _MyHomePageState extends State<MyHomePage> {
                       final GoogleSignInAccount googleUser =
                           await GoogleSignIn().signIn();
                       if (googleUser != null) {
-                        googleUser.authentication.then((auth) {
-                          print(auth.idToken);
-                        }).catchError((e) {
-                          499;
-                        });
+                        final GoogleSignInAuthentication googleAuth =
+                            await googleUser.authentication;
+                        // Create a new credential.
+                        final GoogleAuthCredential googleCredential =
+                            GoogleAuthProvider.credential(
+                          accessToken: googleAuth.accessToken,
+                          idToken: googleAuth.idToken,
+                        );
+                        // Sign in to Firebase with the Google [UserCredential].
+                        final UserCredential googleUserCredential =
+                            await FirebaseAuth.instance
+                                .signInWithCredential(googleCredential);
+                        // final token = await FirebaseAuth.instance.currentUser
+                        //     .getIdToken();
+                        // var url = Uri.parse(
+                        //     'https://api.chowwow.app/api/v1/chowwow?uid=' +
+                        //         token);
+                        // // for creating a chowwow: http.put uid=token
+                        // // for joining a chowwow: http.patch cid=id&uid=token
+                        // var response = await http.put(url);
+                        // print('Response status: ${response.statusCode}');
+                        // print('Response body: ${response.body}');
                         Navigator.push(
                           context,
                           MaterialPageRoute(
