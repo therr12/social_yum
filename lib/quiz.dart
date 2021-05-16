@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:social_yum/campfire.dart';
+import 'package:social_yum/inheritedData.dart';
 
 class Quiz extends StatefulWidget {
   Quiz(this.questions, {Key key}) : super(key: key);
@@ -23,13 +26,15 @@ class Quiz extends StatefulWidget {
 class _QuizState extends State<Quiz> {
   int _questionNumber = 0;
   List<String> answers = [];
+  Data data;
+
   // List<List<String>> questions = [
   //   ["1", "cheese", "bacon"],
   //   ["2", "test", "yah"],
   //   ["3", "yeet", "u know it"],
   // ];
 
-  void _answerQuestion(String answer) {
+  void _answerQuestion(String answer) async {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -37,20 +42,30 @@ class _QuizState extends State<Quiz> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       answers.add(answer);
-      if (_questionNumber + 1 == widget.questions.length) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Campfire(),
-          ),
-        );
-      }
       _questionNumber++;
     });
+    if (_questionNumber == widget.questions.length) {
+      String encodedAnswers = Uri.encodeComponent(jsonEncode(answers));
+      var url = Uri.parse('https://api.chowwow.app/api/v1/chowwow/' +
+          data.chowwow +
+          '/survey?token=' +
+          data.token +
+          '&responses=' +
+          encodedAnswers);
+      var response = await http.patch(url);
+      print(response.body);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Campfire(),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    this.data = InheritedDataProvider.of(context).data;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
