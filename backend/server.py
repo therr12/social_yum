@@ -13,86 +13,96 @@ default_app = firebase_admin.initialize_app()
 
 
 def get_chowwow(id_) -> firestore.DocumentSnapshot:
-  return firestore.Client().collection('chowwows').document(id_).get()
+    return firestore.Client().collection("chowwows").document(id_).get()
 
 
 def add_chowwow_user(id_, user):
-  foo = firestore.Client().collection('chowwows').document(id_).set({'users': [user]}, merge=True)
-  return foo.reference.get()
+    foo = (
+        firestore.Client()
+        .collection("chowwows")
+        .document(id_)
+        .set({"users": [user]}, merge=True)
+    )
+    return foo.reference.get()
 
 
 def put_chowwow(owner) -> firestore.DocumentReference:
-  _, doc = firestore.Client().collection('chowwows').add({'users': [owner]})
-  return doc.get()
+    _, doc = firestore.Client().collection("chowwows").add({"users": [owner]})
+    return doc.get()
 
 
 def get_survey(cid, uid) -> firestore.DocumentSnapshot:
-  id_ = f'{cid}#{uid}'
-  return firestore.Client().collection('surveys').document(id_).get()
+    id_ = f"{cid}#{uid}"
+    return firestore.Client().collection("surveys").document(id_).get()
 
 
 def put_survey(cid, uid, questions=None, responses=None) -> firestore.DocumentSnapshot:
-  id_ = f'{cid}#{uid}'
-  s = firestore.Client().collection('surveys').document(id_)
-  data = {'chowwow': cid, 'user': uid}
-  if questions is not None:
-      data['questions'] = questions
-  if responses is not None:
-      data['responses'] = responses
-  s.set(data, merge=True)
-  return s.get()
+    id_ = f"{cid}#{uid}"
+    s = firestore.Client().collection("surveys").document(id_)
+    data = {"chowwow": cid, "user": uid}
+    if questions is not None:
+        data["questions"] = questions
+    if responses is not None:
+        data["responses"] = responses
+    s.set(data, merge=True)
+    return s.get()
 
 
 def _with_id(doc):
-  if not doc.exists:
-    return None
-  data = doc.to_dict()
-  data.update({'id': doc.id})
-  return data
+    if not doc.exists:
+        return None
+    data = doc.to_dict()
+    data.update({"id": doc.id})
+    return data
 
 
 def authenticated(func):
-  @functools.wraps(func)
-  def wrapped(*a, **k):
-    token = request.args.get('token')
-    if token is None:
-      return make_response('Missing user auth token', 401)
-    decoded_token = auth.verify_id_token(token)
-    return func(decoded_token, *a, **k)
-  return wrapped
+    @functools.wraps(func)
+    def wrapped(*a, **k):
+        token = request.args.get("token")
+        if token is None:
+            return make_response("Missing user auth token", 401)
+        decoded_token = auth.verify_id_token(token)
+        return func(decoded_token, *a, **k)
+
+    return wrapped
 
 
 def allow_origins(origins):
-  def decorator(func):
-    @functools.wraps(func)
-    def wrapped(*a, **k):
-      if request.method == 'OPTIONS':
-        res = make_response()
-        res.headers.add('Access-Control-Allow-Methods', '*')
-        res.headers.add('Access-Control-Allow-Headers', '*')
-      else:
-        res = func(*a, **k)
-      origin = request.headers.get('Origin')
-      res.headers.add('Access-Control-Allow-Origin', origin if origin in origins else "null")
-      return res
-    return wrapped
-  return decorator
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapped(*a, **k):
+            if request.method == "OPTIONS":
+                res = make_response()
+                res.headers.add("Access-Control-Allow-Methods", "*")
+                res.headers.add("Access-Control-Allow-Headers", "*")
+            else:
+                res = func(*a, **k)
+            origin = request.headers.get("Origin")
+            res.headers.add(
+                "Access-Control-Allow-Origin", origin if origin in origins else "null"
+            )
+            return res
+
+        return wrapped
+
+    return decorator
 
 
-@app.route("/api/v1/chowwow", methods=['PUT', 'PATCH', 'GET', 'OPTIONS'])
+@app.route("/api/v1/chowwow", methods=["PUT", "PATCH", "GET", "OPTIONS"])
 @allow_origins(["https://chowwow.web.app", "https://chowwow.app"])
 @authenticated
 def chowwow(token):
-    uid = token['uid']
-    if request.method == 'PUT':
+    uid = token["uid"]
+    if request.method == "PUT":
         return make_response(jsonify(_with_id(put_chowwow(uid))), 200)
-    elif request.method == 'PATCH':
-        id_ = request.args.get('id')
+    elif request.method == "PATCH":
+        id_ = request.args.get("id")
         if id_ is None:
             return make_response('Missing required "id" param', 400)
         return make_response(jsonify(_with_id(add_chowwow_user(id_, uid))), 200)
-    elif request.method == 'GET':
-        id_ = request.args.get('id')
+    elif request.method == "GET":
+        id_ = request.args.get("id")
         if id_ is None:
             return make_response('Missing required "id" param', 400)
         return make_response(jsonify(_with_id(get_chowwow(id_))), 200)
@@ -103,33 +113,56 @@ def chowwow(token):
 def generate_survey(cid, uid):
     # TODO: Do something based on user preferences or local restaurants..
     return [
-        {"question": "How much do you care about ratings?", "choices": ["I'm a Kenny", "I'm an Eliza"]},
-        {"question": "What are you most likely to order at a restaurant?", "choices": ["My go-to", "Something new"]},
-        {"question": "What are you more in the mood for?", "choices": ["Fast Food", "Local Eats"]},
-        {"question": "What are you craving?", "choices": ["Italian", "American", "Thai"]},
+        {
+            "question": "How much do you care about ratings?",
+            "choices": ["I'm a Kenny", "I'm an Eliza"],
+        },
+        {
+            "question": "What are you most likely to order at a restaurant?",
+            "choices": ["My go-to", "Something new"],
+        },
+        {
+            "question": "What are you more in the mood for?",
+            "choices": ["Fast Food", "Local Eats"],
+        },
+        {
+            "question": "What are you craving?",
+            "choices": ["Italian", "American", "Thai"],
+        },
     ]
 
 
-@app.route("/api/v1/chowwow/<cid>/survey", methods=['GET', 'PATCH', 'POST', 'OPTIONS'])
+@app.route("/api/v1/chowwow/<cid>/survey", methods=["GET", "PATCH", "POST", "OPTIONS"])
 @allow_origins(["https://chowwow.web.app", "https://chowwow.app"])
 @authenticated
 def survey(token, cid):
-    uid = token['uid']
+    uid = token["uid"]
     if not get_chowwow(cid).exists:
-      return make_response('Chowwow does not exist', 404)
-    if request.method == 'POST':
-        return make_response(jsonify(_with_id(put_survey(cid, uid, questions=generate_survey(cid, uid), responses=[]))), 200)
-    elif request.method == 'PATCH':
-        responses = request.args.get('responses')
+        return make_response("Chowwow does not exist", 404)
+    if request.method == "POST":
+        return make_response(
+            jsonify(
+                _with_id(
+                    put_survey(
+                        cid, uid, questions=generate_survey(cid, uid), responses=[]
+                    )
+                )
+            ),
+            200,
+        )
+    elif request.method == "PATCH":
+        responses = request.args.get("responses")
         if responses is None:
-          return make_response('Missing responses', 401)
+            return make_response("Missing responses", 401)
         try:
-          parsed_responses = json.loads(responses)
+            parsed_responses = json.loads(responses)
         except json.JSONDecodeError:
-          return make_response('Invalid JSON for responses', 400)
+            return make_response("Invalid JSON for responses", 400)
         else:
-          return make_response(jsonify(_with_id(put_survey(cid, uid, responses=parsed_responses))), 200)
-    elif request.method == 'GET':
+            return make_response(
+                jsonify(_with_id(put_survey(cid, uid, responses=parsed_responses))), 200
+            )
+    elif request.method == "GET":
         return make_response(jsonify(_with_id(get_survey(cid, uid))), 200)
 
 
@@ -137,10 +170,22 @@ def survey(token, cid):
 @allow_origins(["https://chowwow.web.app", "https://chowwow.app"])
 @authenticated
 def list_survey(token, cid):
-    uid = token['uid']
+    uid = token["uid"]
     if not get_chowwow(cid).exists:
-      return make_response('Chowwow does not exist', 404)
-    return make_response(jsonify(list(map(_with_id, firestore.Client().collection('surveys').where('chowwow', '==', cid).stream()))))
+        return make_response("Chowwow does not exist", 404)
+    return make_response(
+        jsonify(
+            list(
+                map(
+                    _with_id,
+                    firestore.Client()
+                    .collection("surveys")
+                    .where("chowwow", "==", cid)
+                    .stream(),
+                )
+            )
+        )
+    )
 
 
 if __name__ == "__main__":
