@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:social_yum/campfire.dart';
 import 'package:social_yum/inheritedData.dart';
+import 'package:social_yum/share_url.dart';
 
 class Quiz extends StatefulWidget {
   Quiz(this.questions, {Key? key}) : super(key: key);
@@ -70,7 +71,7 @@ class _QuizState extends State<Quiz> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text('test'),
+        title: Text(this.data!.title),
       ),
       body: Column(
         children: [
@@ -85,8 +86,7 @@ class _QuizState extends State<Quiz> {
                         ["choices"]
                     .cast<String>()),
           ),
-          Text("$_questionNumber"),
-          Text("$answers"),
+          ShareURL(url: this.data!.chowwow!),
         ],
       ),
     );
@@ -136,10 +136,13 @@ class Question extends StatelessWidget {
         // horizontal).
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            questionText,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            child: Text(
+              questionText,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline5,
+            ),
           ),
           Column(
             children: responseButtons,
@@ -204,10 +207,17 @@ class ResponseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () {
-          onAnswered(answer);
-        },
-        child: Text(answer));
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: SizedBox(
+        width: 200,
+        height: 50,
+        child: ElevatedButton(
+            onPressed: () {
+              onAnswered(answer);
+            },
+            child: Text(answer)),
+      ),
+    );
   }
 }

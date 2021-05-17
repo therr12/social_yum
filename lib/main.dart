@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
+import 'package:social_yum/CreateJoin.dart';
 import 'package:social_yum/inheritedData.dart';
-import 'package:social_yum/share_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,7 +39,7 @@ class MyApp extends StatelessWidget {
                 title: 'chow.wow',
                 chowwow: null,
                 token: null,
-                host: null,
+                isHost: null,
               ));
         } else {
           return MaterialApp(
@@ -75,7 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/images/logo.png'),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Image.asset('assets/images/logo.png'),
+            ),
             Container(
               padding: EdgeInsets.only(right: 50, left: 50),
               child: Column(
@@ -103,11 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         // Once signed in, return the UserCredential
                         googleUserCredential = await FirebaseAuth.instance
                             .signInWithPopup(googleProvider);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ShareScreen()),
-                        );
                       } else {
                         final GoogleSignInAccount? googleUser =
                             await GoogleSignIn().signIn();
@@ -125,27 +120,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           // Sign in to Firebase with the Google [UserCredential].
                           googleUserCredential = await FirebaseAuth.instance
                               .signInWithCredential(googleCredential);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return ShareScreen();
-                            }),
-                          );
                         }
                       }
-                      final token = await FirebaseAuth.instance.currentUser!
-                          .getIdToken();
-                      var url = Uri.parse(
-                          'https://api.chowwow.app/api/v1/chowwow?token=' +
-                              token);
-                      // // for creating a chowwow: http.put uid=token
-                      // // for joining a chowwow: http.patch cid=id&uid=token
-                      var response = await http.put(url);
-                      print('Response status: ${response.statusCode}');
-                      print('Response body: ${response.body}');
-                      InheritedDataProvider.of(context)!.data.chowwow =
-                          jsonDecode(response.body)["id"];
+
+                      final token =
+                          await FirebaseAuth.instance.currentUser!.getIdToken();
                       InheritedDataProvider.of(context)!.data.token = token;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return CreateJoin();
+                        }),
+                      );
                     },
                     child: Center(
                       child: Column(
