@@ -101,7 +101,13 @@ def chowwow(token):
 
 
 def generate_survey(cid, uid):
-    return [{'question': 'What do want?', 'choices': ['Foo', 'Bar']}]*5
+    # TODO: Do something based on user preferences or local restaurants..
+    return [
+        {"question": "How much do you care about ratings?", "choices": ["I'm a Kenny", "I'm an Eliza"]},
+        {"question": "What are you most likely to order at a restaurant?", "choices": ["My go-to", "Something new"]},
+        {"question": "What are you more in the mood for?", "choices": ["Fast Food", "Local Eats"]},
+        {"question": "What are you craving?", "choices": ["Italian", "American", "Thai"]},
+    ]
 
 
 @app.route("/api/v1/chowwow/<cid>/survey", methods=['GET', 'PATCH', 'POST', 'OPTIONS'])
