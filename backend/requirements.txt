@@ -2,3 +2,5 @@ flask>=2.0.0
 google-cloud-firestore
 firebase-admin
 grpcio
+google-cloud-secret-manager
+googlemaps
