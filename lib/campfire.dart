@@ -50,14 +50,12 @@ class CampfireHost extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => Wheel()),
+                    MaterialPageRoute(builder: (context) => Wheel()),
                   );
                 },
                 child: Text(
@@ -67,7 +65,7 @@ class CampfireHost extends StatelessWidget {
                 ),
               ),
             ),
-            ShareURL(url: url),
+            ShareURL(url: data.chowwow!),
             // TextField(
             //   decoration: InputDecoration(
             //     border: OutlineInputBorder(),
@@ -126,6 +124,6 @@ class Tents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset('assets/images/logo.png');
+    return Image.asset('assets/images/logo.png', scale: 1.5);
   }
 }
