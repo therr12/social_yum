@@ -35,44 +35,50 @@ class CampfireHost extends StatelessWidget {
         title: Text(data.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Thank you for submitting your food preferences!",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Tents(),
-            Text(
-              "A restaurant decision will be made once you're done accepting group preferences!",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Wheel()),
-                  );
-                },
-                child: Text(
-                  "Ready to make a decision!",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline5,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Thank you for submitting your food preferences!",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Expanded(flex: 4, child: Tents()),
+              Text(
+                "A restaurant decision will be made once you're done accepting group preferences!",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Wheel()),
+                      );
+                    },
+                    child: Text(
+                      "Ready to make a decision!",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            ShareURL(url: data.chowwow!),
-            // TextField(
-            //   decoration: InputDecoration(
-            //     border: OutlineInputBorder(),
-            //     labelText: 'test',
-            //   ),
-            // ),
-          ],
+              Expanded(flex: 1, child: ShareURL(url: data.chowwow!)),
+              // TextField(
+              //   decoration: InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'test',
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );
@@ -124,6 +130,6 @@ class Tents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset('assets/images/logo.png', scale: 1.5);
+    return Image.asset('assets/images/logo.png');
   }
 }

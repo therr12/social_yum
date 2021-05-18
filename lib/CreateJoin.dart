@@ -18,13 +18,18 @@ class CreateJoin extends StatelessWidget {
         title: Text(data.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/logo.png', scale: 1.3),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('assets/images/logo.png'),
+                  )),
+              Text(
                 "Hey " +
                     (data.googleUser == null ||
                             data.googleUser!.displayName == null
@@ -34,94 +39,105 @@ class CreateJoin extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5,
               ),
-            ),
-            SizedBox(
-              width: 200,
-              height: 50,
-              child: ElevatedButton(
-                  onPressed: () async {
-                    var url = Uri.parse(
-                        'https://api.chowwow.app/api/v1/chowwow?token=' +
-                            data.token!);
-                    // // for creating a chowwow: http.put uid=token
-                    // // for joining a chowwow: http.patch cid=id&uid=token
-                    var response = await http.put(url);
-                    InheritedDataProvider.of(context)!.data.chowwow =
-                        jsonDecode(response.body)["id"];
-                    InheritedDataProvider.of(context)!.data.isHost = true;
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        var url = Uri.parse(
+                            'https://api.chowwow.app/api/v1/chowwow?token=' +
+                                data.token!);
+                        // // for creating a chowwow: http.put uid=token
+                        // // for joining a chowwow: http.patch cid=id&uid=token
+                        var response = await http.put(url);
+                        InheritedDataProvider.of(context)!.data.chowwow =
+                            jsonDecode(response.body)["id"];
+                        InheritedDataProvider.of(context)!.data.isHost = true;
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return ShareScreen();
-                      }),
-                    );
-                  },
-                  child: Text("Create new Chowwow")),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(50.0),
-              child: SizedBox(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    border: Border(
-                      top: BorderSide(width: 2.0, color: Colors.grey),
-                      left: BorderSide(width: 2.0, color: Colors.grey),
-                      right: BorderSide(width: 2.0, color: Colors.grey),
-                      bottom: BorderSide(width: 2.0, color: Colors.grey),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              border: UnderlineInputBorder(),
-                              labelText: 'Enter Chowwow ID'),
-                        ),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return ShareScreen();
+                          }),
+                        );
+                      },
+                      child: Text("Create new Chowwow")),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      border: Border(
+                        top: BorderSide(width: 2.0, color: Colors.grey),
+                        left: BorderSide(width: 2.0, color: Colors.grey),
+                        right: BorderSide(width: 2.0, color: Colors.grey),
+                        bottom: BorderSide(width: 2.0, color: Colors.grey),
                       ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            String chowwow =
-                                'ovugMxE82xEIMNYWjuSN'; // comes from the chowwow
-                            var url = Uri.parse(
-                                'https://api.chowwow.app/api/v1/chowwow?id=' +
-                                    chowwow +
-                                    '&token=' +
-                                    data.token!);
-                            // // for creating a chowwow: http.put uid=token
-                            // // for joining a chowwow: http.patch cid=id&uid=token
-                            var response = await http.patch(url);
-                            print(response.body);
-                            print(response.headers);
-                            print(response.statusCode);
-                            if (response.statusCode == 200) {
-                              InheritedDataProvider.of(context)!.data.isHost =
-                                  false;
-                              InheritedDataProvider.of(context)!.data.chowwow =
-                                  chowwow;
-                              List questions = await getQuizQuestions(data);
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                labelText: 'Enter Chowwow ID'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  String chowwow =
+                                      'ovugMxE82xEIMNYWjuSN'; // comes from the chowwow
+                                  var url = Uri.parse(
+                                      'https://api.chowwow.app/api/v1/chowwow?id=' +
+                                          chowwow +
+                                          '&token=' +
+                                          data.token!);
+                                  // // for creating a chowwow: http.put uid=token
+                                  // // for joining a chowwow: http.patch cid=id&uid=token
+                                  var response = await http.patch(url);
+                                  print(response.body);
+                                  print(response.headers);
+                                  print(response.statusCode);
+                                  if (response.statusCode == 200) {
+                                    InheritedDataProvider.of(context)!
+                                        .data
+                                        .isHost = false;
+                                    InheritedDataProvider.of(context)!
+                                        .data
+                                        .chowwow = chowwow;
+                                    List questions =
+                                        await getQuizQuestions(data);
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return Quiz(questions);
-                                }),
-                              );
-                            } else {
-                              print(
-                                  'error'); // todo figure out how to make this better
-                            }
-                          },
-                          child: Text("Join Existing Chowwow")),
-                    ],
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return Quiz(questions);
+                                      }),
+                                    );
+                                  } else {
+                                    print(
+                                        'error'); // todo figure out how to make this better
+                                  }
+                                },
+                                child: Text("Join Existing Chowwow")),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
