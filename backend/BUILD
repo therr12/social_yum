@@ -14,8 +14,10 @@ py_image(
     deps = [
             requirement("flask"),
             requirement("google-cloud-firestore"),
+            requirement("google-cloud-secret-manager"),
             requirement("firebase-admin"),
             requirement("grpcio"),
+            requirement("googlemaps"),
     ],
 )
 

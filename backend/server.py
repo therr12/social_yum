@@ -5,11 +5,13 @@ import os
 from flask import Flask, request, make_response, jsonify
 import firebase_admin
 from firebase_admin import auth
+import googlemaps
 from google.cloud import firestore
-
+from google.cloud import secretmanager_v1
 
 app = Flask(__name__)
 default_app = firebase_admin.initialize_app()
+maps_api_key = secretmanager_v1.SecretManagerServiceClient().access_secret_version(request={'name': "projects/chowwow/secrets/google-maps-api-key/versions/latest"}).payload.data.decode('utf8')
 
 
 def get_chowwow(id_) -> firestore.DocumentSnapshot:
@@ -17,13 +19,9 @@ def get_chowwow(id_) -> firestore.DocumentSnapshot:
 
 
 def add_chowwow_user(id_, user):
-    foo = (
-        firestore.Client()
-        .collection("chowwows")
-        .document(id_)
-        .set({"users": [user]}, merge=True)
-    )
-    return foo.reference.get()
+    ref = firestore.Client().collection("chowwows").document(id_)
+    ref.set({"users": [user]}, merge=True)
+    return ref.get()
 
 
 def put_chowwow(owner) -> firestore.DocumentReference:
@@ -186,6 +184,15 @@ def list_survey(token, cid):
             )
         )
     )
+
+
+@app.route("/api/v1/locations")
+@allow_origins(["https://chowwow.web.app", "https://chowwow.app"])
+def foo():
+    client = googlemaps.Client(key=maps_api_key, retry_timeout=60*60, retry_over_query_limit=False)
+
+    resp = client.places(query="restaurant", location=[40.600884, -111.794177], radius=15*1600, type='restaurant')
+    return make_response(jsonify(resp), 200)
 
 
 if __name__ == "__main__":
